@@ -171,8 +171,8 @@ def alternative_recommendations(lat, lon):
         eta_s = walk_eta_seconds(d)
 
         if eta_s > ALT_MAX_WALK_S: continue 
-        bikes = int(s.get("availablebikes", 0) or 0)
-        stands = int(s.get("availablestands", 0) or 0)
+        bikes = int(s.get("available_bikes", 0) or 0)
+        stands = int(s.get("available_stands", 0) or 0)
         score = round(bikes - ALT_LAMBDA*(eta_s/60.0), 2)
         sid = s.get("stationid") or s.get("number") or s.get("name")
 
