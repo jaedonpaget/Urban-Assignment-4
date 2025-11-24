@@ -18,8 +18,8 @@ INTERVAL = float(sys.argv[2]) if len(sys.argv) > 2 else 1.0
 SESSION = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
 
 FIELDS = [
-    "sessionid", "timestampms", "timestampiso", "latitude", "longitude", "accuracym", "speedmps", "bearingdeg",
-    "altitudem", "provider", "rawprovider", "source", "reused",
+    "session_id", "timestamp_ms", "timestamp_iso", "latitude", "longitude", "accuracy_m", "speed_mps", "bearing_deg",
+    "altitude_m", "provider", "raw_provider", "source", "reused",
     "nearest_station_id", "nearest_station_name", "nearest_dist_m", "nearest_walk_eta_s",
     "nearest_bikes", "nearest_stands", "risk_flag"
 ]
