@@ -17,7 +17,7 @@ BIKES_HISTORY = defaultdict(lambda: deque(maxlen=FALL_WINDOW))
 OUT = sys.argv[1] if len(sys.argv) > 1 else "gps_log.csv"
 INTERVAL = float(sys.argv[2]) if len(sys.argv) > 2 else 1.0
 
-USER_NAME = sys.argc[3].strip() if len(sys.argv) >3 else None
+USER_NAME = sys.argv[3].strip() if len(sys.argv) >3 else None
 
 SESSION = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
 
