@@ -11,10 +11,14 @@ ALT_MAX_WALK_S = 10 * 60
 ALT_TOP_K = 3
 ALT_LAMBDA = 2.0 
 
+
 BIKES_HISTORY = defaultdict(lambda: deque(maxlen=FALL_WINDOW))
 
 OUT = sys.argv[1] if len(sys.argv) > 1 else "gps_log.csv"
 INTERVAL = float(sys.argv[2]) if len(sys.argv) > 2 else 1.0
+
+USER_NAME = sys.argc[3].strip() if len(sys.argv) >3 else None
+
 SESSION = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
 
 FIELDS = [
@@ -38,6 +42,18 @@ JCD_URL = "https://api.jcdecaux.com/vls/v1/stations"
 # Shared latest bikes snapshot for nearest lookup
 BIKES_LOCK = threading.Lock()
 LATEST_STATIONS = []  # list of dicts with lat, lon, name, available_bikes, available_stands
+
+
+def post_user_latest_session(user_name, session_id):
+    if not FIREBASE_DB_URL or not user_name:
+        return
+    doc = {"latest_session": session_id, "updated_at_ms": int(time.time() * 1000)}
+    try: 
+        requests.put(fb_url(f"/users/{user_name}/latest_session"), json=doc, timeout=5)
+    except Exception as e:
+        print("Warn user latest_session post failed", e, file=sys.stderr)
+
+
 
 def fb_url(path):
     if not FIREBASE_DB_URL:
@@ -264,6 +280,11 @@ def post_recommendations(session_id, recs):
 def main():
     global LAST_LOC, LAST_TIME
     print(f"Logging NETWORK provider to {OUT} every {INTERVAL}s; bikes poll {BIKES_POLL_SECS}s.", flush=True)
+
+    # Register this session as the latest for this user (if provided)
+    if USER_NAME:
+        post_user_latest_session(USER_NAME, SESSION)
+
     if not FIREBASE_DB_URL:
         print("Note: FIREBASE_DB_URL not set; cloud streaming disabled.", file=sys.stderr)
     if not JC_KEY:
